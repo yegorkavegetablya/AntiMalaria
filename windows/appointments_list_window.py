@@ -5,18 +5,15 @@ from windows.creating_appointment_window import open_creating_appointment_window
 from windows.reading_appointment_window import open_reading_appointment_window
 
 
-current_window, current_user, is_origin_main, appointments_listbox, appointments_info_list = None, None, None, None, None
+current_window, current_user, appointments_listbox, appointments_info_list = None, None, None, None
 
 
 def go_back():
     from windows.main_window import open_main_window
-    global current_window, current_user, is_origin_main
+    global current_window, current_user
 
-    if is_origin_main:
-        current_window.destroy()
-        open_main_window(current_user)
-    else:
-        pass # TODO
+    current_window.destroy()
+    open_main_window(current_user)
 
 
 def creating_appointment_button_click():
@@ -27,17 +24,16 @@ def creating_appointment_button_click():
 
 
 def reading_appointment_button_click():
-    global current_window, current_user, patients_listbox, patients_info_list
+    global current_window, current_user
 
+    current_appointment_info_list = appointments_info_list[appointments_listbox.curselection()[0]]
     current_window.destroy()
-    # open_reading_patient_window(current_user, patients_info_list[patients_listbox.curselection()[0]])
-    open_reading_appointment_window(current_user, 0)
+    open_reading_appointment_window(current_user, current_appointment_info_list)
 
 
-def open_appointments_list_window(user, from_main=True):
-    global current_window, current_user, is_origin_main, appointments_listbox, appointments_info_list
+def open_appointments_list_window(user):
+    global current_window, current_user, appointments_listbox, appointments_info_list
     current_user = user
-    is_origin_main = from_main
 
     current_window = Tk()
     current_window.title("СТРАНИЦА ПРОСМОТРА СПИСКА ПРИЁМОВ")
@@ -55,18 +51,28 @@ def open_appointments_list_window(user, from_main=True):
     all_appointments = cursor.fetchall()
     connection.commit()
 
+    connection = sqlite3.connect('anti_malaria_db.db')
+    cursor = connection.cursor()
+    get_all_patients = 'SELECT * FROM patients'
+    cursor.execute(get_all_patients)
+    all_patients = cursor.fetchall()
+    appointments_info_list = all_appointments
+    connection.commit()
+
     appointments_list = []
     for appointment in all_appointments:
-        appointments_list.append(str(appointment[0]))
-    appointments_info_list = appointments_list
+        current_patient = None
+        for patient in all_patients:
+            if appointment[3] == patient[0]:
+                current_patient = patient
+                break
+        appointments_list.append(str(appointment[0]) + ': ' + appointment[1] + ', ' + current_patient[1])
 
-    # main_frame = ttk.Frame(borderwidth=1)
     ttk.Button(text="Добавить приём", command=creating_appointment_button_click).pack(anchor="s")
     ttk.Button(text="Просмотреть карточку приёма", command=reading_appointment_button_click).pack(anchor="s")
     appointments_list_variable = Variable(value=appointments_list)
     appointments_list_listbox = Listbox(listvariable=appointments_list_variable)
     appointments_listbox = appointments_list_listbox
     appointments_list_listbox.pack(anchor="s", fill=Y, padx=5, pady=5)
-    # main_frame.pack(anchor="s")
 
     current_window.mainloop()

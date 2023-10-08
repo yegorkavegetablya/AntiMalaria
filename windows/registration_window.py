@@ -3,7 +3,7 @@ from tkinter import ttk
 import sqlite3
 
 
-login_entry, password_entry, name_entry = None, None, None
+current_window, login_entry, password_entry, name_entry = None, None, None, None
 
 
 def do_registration():
@@ -20,10 +20,15 @@ def do_registration():
                       '\");'
     cursor.execute(insert_new_user)
     connection.commit()
+    connection.close()
+
+    from windows.start_window import open_start_window
+    current_window.destroy()
+    open_start_window()
 
 
 def open_registration_window():
-    global login_entry, password_entry, name_entry
+    global login_entry, password_entry, name_entry, current_window
 
     current_window = Tk()
     current_window.title("СТРАНИЦА РЕГИСТРАЦИИ")

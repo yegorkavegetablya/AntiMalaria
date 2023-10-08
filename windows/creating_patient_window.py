@@ -3,18 +3,15 @@ from tkinter import ttk
 import sqlite3
 
 
-current_window, current_user, is_origin_list, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry = None, None, None, None, None, None, None, None, None
+current_window, current_user, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry = None, None, None, None, None, None, None, None
 
 
 def go_back():
     from windows.patients_list_window import open_patients_list_window
-    global current_window, current_user, is_origin_main
+    global current_window, current_user
 
-    if is_origin_list:
-        current_window.destroy()
-        open_patients_list_window(current_user)
-    else:
-        pass # TODO
+    current_window.destroy()
+    open_patients_list_window(current_user)
 
 
 def do_create_patient():
@@ -38,15 +35,15 @@ def do_create_patient():
                       '\");'
     cursor.execute(insert_new_patient)
     connection.commit()
+    connection.close()
 
     current_window.destroy()
     open_patients_list_window(current_user)
 
 
-def open_creating_patient_window(user, from_list=True):
-    global current_window, current_user, is_origin_list, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
+def open_creating_patient_window(user):
+    global current_window, current_user, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
     current_user = user
-    is_origin_list = from_list
 
     current_window = Tk()
     current_window.title("СТРАНИЦА ДОБАВЛЕНИЯ ПАЦИЕНТА")
@@ -64,7 +61,7 @@ def open_creating_patient_window(user, from_list=True):
     patient_age_entry = ttk.Entry()
     patient_age_entry.pack(anchor="s")
     ttk.Label(text="Введите пол пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_sex_entry = ttk.Entry()
+    patient_sex_entry = ttk.Combobox(values=["мужской", "женский"])
     patient_sex_entry.pack(anchor="s")
     ttk.Label(text="Введите e-mail пациента:", font=("Arial", 10)).pack(anchor="s")
     patient_email_entry = ttk.Entry()

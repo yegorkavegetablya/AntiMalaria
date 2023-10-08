@@ -17,10 +17,15 @@ def do_authorization():
     all_users = cursor.fetchall()
     connection.commit()
 
+    is_user_found = False
     for user in all_users:
         if user[1] == login_entry.get() and user[2] == password_entry.get():
-            current_window.destroy()
-            open_main_window(user)
+            is_user_found = True
+            break
+
+    if is_user_found:
+        current_window.destroy()
+        open_main_window(user)
 
 
 def open_authorization_window():

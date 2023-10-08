@@ -40,6 +40,8 @@ def do_update_patient():
     cursor.execute(update_patient_info)
     connection.commit()
 
+    connection.close()
+
     current_window.destroy()
     open_patients_list_window(current_user)
 

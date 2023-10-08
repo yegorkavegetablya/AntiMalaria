@@ -4,7 +4,7 @@ import sqlite3
 from windows.updating_patient_window import open_updating_patient_window
 
 
-current_window, current_user, origin, current_patient = None, None, None, None
+current_window, current_user, origin, current_patient, current_appointment = None, None, None, None, None
 
 
 def update_patient_button_click():
@@ -16,20 +16,24 @@ def update_patient_button_click():
 
 def go_back():
     from windows.patients_list_window import open_patients_list_window
-    global current_window, current_user, origin
+    from windows.reading_appointment_window import open_reading_appointment_window
+    global current_window, current_user, origin, current_appointment
 
     if origin == "patients_list":
         current_window.destroy()
         open_patients_list_window(current_user)
     else:
-        pass # TODO
+        print("!")
+        current_window.destroy()
+        open_reading_appointment_window(current_user, current_appointment)
 
 
-def open_reading_patient_window(user, patient, from_where="patients_list"):
-    global current_window, current_user, origin, current_patient
+def open_reading_patient_window(user, patient, from_where="patients_list", appointment=None):
+    global current_window, current_user, origin, current_patient, current_appointment
     current_user = user
     origin = from_where
     current_patient = patient
+    current_appointment = appointment
 
     current_window = Tk()
     current_window.title("СТРАНИЦА ПРОСМОТРА КАРТОЧКИ ПАЦИЕНТА")

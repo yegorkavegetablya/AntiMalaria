@@ -1,47 +1,69 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
+from windows.updating_appointment_window import open_updating_appointment_window
 
 
-login_entry, password_entry, name_entry = None, None, None
+current_window, current_user, origin, current_appointment, current_patient = None, None, None, None, None
 
 
-def do_registration():
-    global login_entry, password_entry, name_entry
+def update_appointment_button_click():
+    global current_window, current_user, current_appointment
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
-    insert_new_user = 'INSERT INTO users (login, password, user_name) VALUES (\"' \
-                      + login_entry.get() + \
-                      '\", \"' \
-                      + password_entry.get() + \
-                      '\", \"'\
-                      + name_entry.get() +\
-                      '\");'
-    cursor.execute(insert_new_user)
-    connection.commit()
+    current_window.destroy()
+    open_updating_appointment_window(current_user, current_appointment)
+
+
+def read_patient_button_click():
+    global current_window, current_user, current_patient, current_appointment
+    from windows.reading_patient_window import open_reading_patient_window
+
+    current_window.destroy()
+    open_reading_patient_window(current_user, current_patient, 'appointment_reading', current_appointment)
+
+
+def go_back():
+    from windows.patients_list_window import open_patients_list_window
+    global current_window, current_user, origin
+
+    current_window.destroy()
+    open_patients_list_window(current_user)
 
 
 def open_reading_appointment_window(user, appointment):
-    global login_entry, password_entry, name_entry
+    global current_window, current_user, origin, current_appointment, current_patient
+    current_user = user
+    current_appointment = appointment
 
     current_window = Tk()
-    current_window.title("СТРАНИЦА РЕГИСТРАЦИИ")
-    current_window.geometry("300x500")
+    current_window.title("СТРАНИЦА ПРОСМОТРА ПРИЁМА")
+    current_window.geometry("1000x1000")
 
-    frame = ttk.Frame(borderwidth=0)
+    header_frame = ttk.Frame(borderwidth=1, height=50)
+    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.pack(expand=False, anchor="n", fill=X)
 
-    ttk.Label(frame, text="Введите ваш логин:", font=("Arial", 14)).pack(expand=True, anchor="center")
-    login_entry = ttk.Entry(frame)
-    login_entry.pack(expand=True, anchor="center")
-    ttk.Label(frame, text="Введите ваш пароль:", font=("Arial", 14)).pack(expand=True, anchor="center")
-    password_entry = ttk.Entry(frame)
-    password_entry.pack(expand=True, anchor="center")
-    ttk.Label(frame, text="Введите ваше ФИО:", font=("Arial", 14)).pack(expand=True, anchor="center")
-    name_entry = ttk.Entry(frame)
-    name_entry.pack(expand=True, anchor="center")
-    ttk.Button(frame, text="Зарегистрироваться", command=do_registration).pack(expand=True, anchor="center")
+    connection = sqlite3.connect('anti_malaria_db.db')
+    cursor = connection.cursor()
+    get_all_patients = 'SELECT * FROM patients'
+    cursor.execute(get_all_patients)
+    all_patients = cursor.fetchall()
+    connection.commit()
+    connection.close()
 
-    frame.pack(expand=True, anchor="center")
+    for patient in all_patients:
+        if appointment[3] == patient[0]:
+            current_patient = patient
+            break
+
+    ttk.Label(text="Дата и время приёма:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
+    ttk.Label(text=str(appointment[1]), font=("Arial", 10)).pack(anchor="s")
+    ttk.Label(text="Статус приёма:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
+    ttk.Label(text=str(appointment[2]), font=("Arial", 10)).pack(anchor="s")
+    ttk.Label(text="Пациент:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
+    ttk.Label(text=str(str(current_patient[0]) + ': ' + current_patient[1] + ', ' + str(current_patient[2]) + ', ' + current_patient[3]), font=("Arial", 10)).pack(anchor="s")
+    ttk.Button(text="Просмотреть карточку пациента", command=read_patient_button_click).pack(anchor="s")
+    ttk.Button(text="Изменить", command=update_appointment_button_click).pack(anchor="s")
 
     current_window.mainloop()

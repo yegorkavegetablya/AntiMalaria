@@ -29,7 +29,6 @@ def reading_patient_button_click():
     current_patients_info_list = patients_info_list[patients_listbox.curselection()[0]]
     current_window.destroy()
     open_reading_patient_window(current_user, current_patients_info_list)
-    # open_reading_patient_window(current_user, 0)
 
 
 def deleting_patient_button_click():
@@ -39,10 +38,10 @@ def deleting_patient_button_click():
 
     connection = sqlite3.connect('anti_malaria_db.db')
     cursor = connection.cursor()
-    # for current_patient in current_patients_info_list:
     delete_all_patients = 'DELETE FROM patients WHERE patient_id=' + str(current_patients_info_list[0]) + ';'
     cursor.execute(delete_all_patients)
     connection.commit()
+    connection.close()
 
     current_window.destroy()
     open_patients_list_window(current_user)
@@ -68,22 +67,18 @@ def open_patients_list_window(user):
     all_patients = cursor.fetchall()
     patients_info_list = all_patients
     connection.commit()
+    connection.close()
 
     patients_list = []
     for patient in all_patients:
         patients_list.append(str(patient[0]) + ': ' + str(patient[1]) + ', ' + str(patient[2]) + ' лет, пол ' + str(patient[3]))
 
-    # main_frame = ttk.Frame(borderwidth=1)
     ttk.Button(text="Добавить пациента", command=creating_patient_button_click).pack(anchor="s")
     ttk.Button(text="Просмотреть карточку пациента", command=reading_patient_button_click).pack(anchor="s")
     ttk.Button(text="Удалить карточку пациента", command=deleting_patient_button_click).pack(anchor="s")
     patients_list_variable = Variable(value=patients_list)
     patients_list_listbox = Listbox(listvariable=patients_list_variable)
-    print(patients_list_listbox.curselection())
     patients_list_listbox.pack(anchor="s", fill=Y, padx=5, pady=5)
-    print(patients_list_listbox.curselection())
     patients_listbox = patients_list_listbox
-    print(patients_listbox.curselection())
-    # main_frame.pack(anchor="s")
 
     current_window.mainloop()
