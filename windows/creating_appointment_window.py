@@ -29,7 +29,6 @@ def do_create_appointment():
                       ', '\
                       + str(current_user[0]) +\
                       ');'
-    print(insert_new_appointment)
     cursor.execute(insert_new_appointment)
     connection.commit()
     connection.close()

@@ -14,6 +14,30 @@ def update_patient_button_click():
     open_updating_patient_window(current_user, current_patient)
 
 
+def load_images_button_click():
+    global current_window, current_user, current_patient
+    from windows.images_loading_window import open_images_loading_window
+
+    current_window.destroy()
+    open_images_loading_window(current_user, current_patient)
+
+
+def analyse_images_button_click():
+    global current_window, current_user, current_patient
+    from windows.analyse_image_window import open_images_analysis_window
+
+    connection = sqlite3.connect('anti_malaria_db.db')
+    cursor = connection.cursor()
+    get_all_images = 'SELECT * FROM images WHERE owner_patient_id=' + str(current_patient[0]) + ';'
+    cursor.execute(get_all_images)
+    all_images = cursor.fetchall()
+    connection.commit()
+    connection.close()
+
+    current_window.destroy()
+    open_images_analysis_window(current_user, current_patient, all_images)
+
+
 def go_back():
     from windows.patients_list_window import open_patients_list_window
     from windows.reading_appointment_window import open_reading_appointment_window
@@ -57,5 +81,7 @@ def open_reading_patient_window(user, patient, from_where="patients_list", appoi
     ttk.Label(text="Дополнительная информация о пациенте:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
     ttk.Label(text=str(patient[6]), font=("Arial", 10)).pack(anchor="s")
     ttk.Button(text="Изменить", command=update_patient_button_click).pack(anchor="s")
+    ttk.Button(text="Загрузить изображения", command=load_images_button_click).pack(anchor="s")
+    ttk.Button(text="Проанализировать изображения изображения", command=analyse_images_button_click).pack(anchor="s")
 
     current_window.mainloop()

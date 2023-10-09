@@ -38,8 +38,8 @@ def deleting_patient_button_click():
 
     connection = sqlite3.connect('anti_malaria_db.db')
     cursor = connection.cursor()
-    delete_all_patients = 'DELETE FROM patients WHERE patient_id=' + str(current_patients_info_list[0]) + ';'
-    cursor.execute(delete_all_patients)
+    delete_patient = 'DELETE FROM patients WHERE patient_id=' + str(current_patients_info_list[0]) + ';'
+    cursor.execute(delete_patient)
     connection.commit()
     connection.close()
 
