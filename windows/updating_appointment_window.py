@@ -1,9 +1,51 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
+import datetime
+import re
+from tkinter.messagebox import showerror, showwarning, showinfo
 
 
 current_window, current_user, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry = None, None, None, None, None, None, None, None
+
+
+def validate_appointment_datetime():
+    global appointment_datetime_variable, appointment_time_entry, appointment_date_entry
+
+    appointment_datetime = None
+    try:
+        splitted_date = list(map(int, re.split('[-\.:]', appointment_date_entry.get())))
+        print(splitted_date)
+        splitted_time = list(map(int, re.split('[-\.:]', appointment_time_entry.get())))
+        print(splitted_time)
+        appointment_datetime = datetime.datetime(splitted_date[2], splitted_date[1], splitted_date[0], splitted_time[0], splitted_time[1], 0, 0)
+    except:
+        appointment_datetime_variable.set("Неверный формат даты или времени")
+        return False
+    appointment_datetime_variable.set("")
+
+    current_moment = datetime.datetime.now()
+    if current_moment > appointment_datetime:
+        appointment_datetime_variable.set("Приём должен происходить в будущем")
+        return False
+
+    appointment_datetime_variable.set("")
+    return True
+
+
+def check_if_no_empty():
+    global appointment_date_entry, appointment_time_entry, patient_id_entry
+
+    if appointment_date_entry.get() == "":
+        showerror("Ошибка!", "Заполните все обязательные поля (дата, время, пациент)!")
+        return False
+    if appointment_time_entry.get() == "":
+        showerror("Ошибка!", "Заполните все обязательные поля (дата, время, пациент)!")
+        return False
+    if patient_id_entry.get() == "":
+        showerror("Ошибка!", "Заполните все обязательные поля (дата, время, пациент)!")
+        return False
+    return True
 
 
 def go_back():
@@ -18,23 +60,24 @@ def do_update_appointment():
     global current_window, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry
     from windows.appointments_list_window import open_appointments_list_window
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
+    if check_if_no_empty() and validate_appointment_datetime():
+        connection = sqlite3.connect('anti_malaria_db.db')
+        cursor = connection.cursor()
 
-    update_appointment_date = 'UPDATE appointments SET appointment_date=\"' + appointment_date_entry.get() + ' ' + appointment_time_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
-    cursor.execute(update_appointment_date)
-    connection.commit()
-    update_status = 'UPDATE appointments SET status=\"' + appointment_status_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
-    cursor.execute(update_status)
-    connection.commit()
-    update_assigned_patient_id = 'UPDATE appointments SET assigned_patient_id=' + patient_id_entry.get().split(':')[0] + ' WHERE appointment_id=' + str(current_appointment[0]) + ';'
-    cursor.execute(update_assigned_patient_id)
-    connection.commit()
+        update_appointment_date = 'UPDATE appointments SET appointment_date=\"' + appointment_date_entry.get() + ' ' + appointment_time_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
+        cursor.execute(update_appointment_date)
+        connection.commit()
+        update_status = 'UPDATE appointments SET status=\"' + appointment_status_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
+        cursor.execute(update_status)
+        connection.commit()
+        update_assigned_patient_id = 'UPDATE appointments SET assigned_patient_id=' + patient_id_entry.get().split(':')[0] + ' WHERE appointment_id=' + str(current_appointment[0]) + ';'
+        cursor.execute(update_assigned_patient_id)
+        connection.commit()
 
-    connection.close()
+        connection.close()
 
-    current_window.destroy()
-    open_appointments_list_window(current_user)
+        current_window.destroy()
+        open_appointments_list_window(current_user)
 
 
 def open_updating_appointment_window(user, appointment):

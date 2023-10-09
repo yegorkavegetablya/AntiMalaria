@@ -3,8 +3,18 @@ from tkinter import ttk
 import sqlite3
 from tkinter import filedialog
 import shutil
+from tkinter.messagebox import showerror, showwarning, showinfo
 
 current_window, current_user, current_patient, images_paths, paths = None, None, None, None, None
+
+
+def check_if_no_empty():
+    global paths
+
+    if paths is None or len(paths) == 0:
+        showerror("Ошибка!", "Выберите хотя бы один файл!")
+        return False
+    return True
 
 
 def go_back():
@@ -33,29 +43,30 @@ def do_save_images():
     global images_paths, paths, current_patient, current_user
     from windows.reading_patient_window import open_reading_patient_window
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
-    get_all_patients = 'SELECT * FROM images'
-    cursor.execute(get_all_patients)
-    all_images = cursor.fetchall()
-    connection.commit()
-
-    index = 0
-    for path in paths:
-        new_path = '.\\images\\sample' + str(len(all_images) + index) + '.' + path.split('.')[-1]
-        shutil.copyfile(path, new_path)
-        insert_new_image = 'INSERT INTO images (file_path, is_infected, owner_patient_id) VALUES (\"' \
-                                 + new_path + '\", 0, ' \
-                                 + str(current_patient[0]) + \
-                                 ');'
-        cursor.execute(insert_new_image)
+    if check_if_no_empty():
+        connection = sqlite3.connect('anti_malaria_db.db')
+        cursor = connection.cursor()
+        get_all_patients = 'SELECT * FROM images'
+        cursor.execute(get_all_patients)
+        all_images = cursor.fetchall()
         connection.commit()
-        index += 1
 
-    connection.close()
+        index = 0
+        for path in paths:
+            new_path = '.\\images\\sample' + str(len(all_images) + index) + '.' + path.split('.')[-1]
+            shutil.copyfile(path, new_path)
+            insert_new_image = 'INSERT INTO images (file_path, is_infected, owner_patient_id) VALUES (\"' \
+                                     + new_path + '\", 0, ' \
+                                     + str(current_patient[0]) + \
+                                     ');'
+            cursor.execute(insert_new_image)
+            connection.commit()
+            index += 1
 
-    current_window.destroy()
-    open_reading_patient_window(current_user, current_patient)
+        connection.close()
+
+        current_window.destroy()
+        open_reading_patient_window(current_user, current_patient)
 
 
 def open_images_loading_window(user, patient):

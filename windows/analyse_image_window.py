@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
+from tkinter.messagebox import showinfo, askyesno
 from tkinter import filedialog
 import shutil
 
@@ -21,11 +22,11 @@ def resizeImage(img, newWidth, newHeight):
 
 
 def go_back():
-    from windows.images_loading_window import open_images_loading_window
+    from windows.reading_patient_window import open_reading_patient_window
     global current_window, current_user, current_patient
 
     current_window.destroy()
-    open_images_loading_window(current_user, current_patient)
+    open_reading_patient_window(current_user, current_patient)
 
 
 def do_analyse():
@@ -47,24 +48,25 @@ def do_analyse():
 def do_delete():
     global current_window, current_user, current_patient, all_images, image_index
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
-    delete_image = 'DELETE FROM images WHERE image_id=' + str(all_images[image_index][0]) + ';'
-    cursor.execute(delete_image)
-    connection.commit()
+    if askyesno("Подтверждение удаления", "Вы точно хотите безвозвратно удалить данное изображение?"):
+        connection = sqlite3.connect('anti_malaria_db.db')
+        cursor = connection.cursor()
+        delete_image = 'DELETE FROM images WHERE image_id=' + str(all_images[image_index][0]) + ';'
+        cursor.execute(delete_image)
+        connection.commit()
 
-    get_all_images = 'SELECT * FROM images WHERE owner_patient_id=' + str(current_patient[0]) + ';'
-    cursor.execute(get_all_images)
-    new_all_images = cursor.fetchall()
-    all_images = new_all_images
-    connection.commit()
+        get_all_images = 'SELECT * FROM images WHERE owner_patient_id=' + str(current_patient[0]) + ';'
+        cursor.execute(get_all_images)
+        new_all_images = cursor.fetchall()
+        all_images = new_all_images
+        connection.commit()
 
-    connection.close()
+        connection.close()
 
-    if len(all_images) == 0:
-        go_back()
-    else:
-        do_open_next()
+        if len(all_images) == 0:
+            go_back()
+        else:
+            do_open_next()
 
 
 def do_open_previous():

@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
+from tkinter.messagebox import showinfo, askyesno
 from windows.creating_patient_window import open_creating_patient_window
 from windows.reading_patient_window import open_reading_patient_window
 
@@ -34,17 +35,18 @@ def reading_patient_button_click():
 def deleting_patient_button_click():
     global current_window, current_user, patients_listbox, patients_info_list
 
-    current_patients_info_list = patients_info_list[patients_listbox.curselection()[0]]
+    if askyesno("Подтверждение удаления", "Вы точно хотите безвозвратно удалить данного пациента?"):
+        current_patients_info_list = patients_info_list[patients_listbox.curselection()[0]]
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
-    delete_patient = 'DELETE FROM patients WHERE patient_id=' + str(current_patients_info_list[0]) + ';'
-    cursor.execute(delete_patient)
-    connection.commit()
-    connection.close()
+        connection = sqlite3.connect('anti_malaria_db.db')
+        cursor = connection.cursor()
+        delete_patient = 'DELETE FROM patients WHERE patient_id=' + str(current_patients_info_list[0]) + ';'
+        cursor.execute(delete_patient)
+        connection.commit()
+        connection.close()
 
-    current_window.destroy()
-    open_patients_list_window(current_user)
+        current_window.destroy()
+        open_patients_list_window(current_user)
 
 
 def open_patients_list_window(user):

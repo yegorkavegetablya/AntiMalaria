@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
+from tkinter.messagebox import showinfo, askyesno
 from windows.creating_appointment_window import open_creating_appointment_window
 from windows.reading_appointment_window import open_reading_appointment_window
 
@@ -34,17 +35,18 @@ def reading_appointment_button_click():
 def deleting_patient_button_click():
     global current_window, current_user, appointments_listbox, appointments_info_list
 
-    current_appointment_info_list = appointments_info_list[appointments_listbox.curselection()[0]]
+    if askyesno("Подтверждение удаления", "Вы точно хотите безвозвратно удалить данный приём?"):
+        current_appointment_info_list = appointments_info_list[appointments_listbox.curselection()[0]]
 
-    connection = sqlite3.connect('anti_malaria_db.db')
-    cursor = connection.cursor()
-    delete_appointment = 'DELETE FROM appointments WHERE appointment_id=' + str(current_appointment_info_list[0]) + ';'
-    cursor.execute(delete_appointment)
-    connection.commit()
-    connection.close()
+        connection = sqlite3.connect('anti_malaria_db.db')
+        cursor = connection.cursor()
+        delete_appointment = 'DELETE FROM appointments WHERE appointment_id=' + str(current_appointment_info_list[0]) + ';'
+        cursor.execute(delete_appointment)
+        connection.commit()
+        connection.close()
 
-    current_window.destroy()
-    open_appointments_list_window(current_user)
+        current_window.destroy()
+        open_appointments_list_window(current_user)
 
 
 def open_appointments_list_window(user):
