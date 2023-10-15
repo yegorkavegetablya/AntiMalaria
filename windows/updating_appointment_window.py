@@ -86,6 +86,7 @@ def go_settings():
 
 
 def open_updating_appointment_window(window, user, appointment):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry
     current_user = user
     current_appointment = appointment
@@ -94,13 +95,13 @@ def open_updating_appointment_window(window, user, appointment):
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
-    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -120,20 +121,34 @@ def open_updating_appointment_window(window, user, appointment):
             current_patient = patient_info
             break
 
-    ttk.Label(text="Введите дату приёма:", font=("Arial", 10)).pack(anchor="s")
-    appointment_date_entry = ttk.Entry()
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите дату приёма:").pack(anchor="w", fill=X)
+
+    appointment_date_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     appointment_date_entry.insert(0, appointment[1].split()[0])
-    appointment_date_entry.pack(anchor="s")
-    ttk.Label(text="Введите время приёма:", font=("Arial", 10)).pack(anchor="s")
-    appointment_time_entry = ttk.Entry()
+    appointment_date_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите время приёма:").pack(anchor="w", fill=X)
+
+    appointment_time_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     appointment_time_entry.insert(0, appointment[1].split()[1])
-    appointment_time_entry.pack(anchor="s")
-    ttk.Label(text="Выберите статус приёма:", font=("Arial", 10)).pack(anchor="s")
-    appointment_status_entry = ttk.Combobox(values=["запланирован", "отменён", "выполнен"])
+    appointment_time_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Выберите статус приёма:").pack(anchor="w", fill=X)
+
+    appointment_status_entry = ttk.Combobox(main_frame, font=("Roboto", current_font_size), values=["запланирован", "отменён", "выполнен"])
     appointment_status_entry.insert(0, appointment[2])
-    appointment_status_entry.pack(anchor="s")
-    ttk.Label(text="Выберите пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_id_entry = ttk.Combobox(values=patients_list)
+    appointment_status_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Выберите пациента:").pack(anchor="w", fill=X)
+
+    patient_id_entry = ttk.Combobox(main_frame, font=("Roboto", current_font_size), values=patients_list)
     patient_id_entry.insert(0, current_patient)
-    patient_id_entry.pack(anchor="s")
-    ttk.Button(text="Принять", command=do_update_appointment).pack(anchor="s")
+    patient_id_entry.pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Принять", command=do_update_appointment).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

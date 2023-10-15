@@ -59,6 +59,7 @@ def go_back():
 
 
 def open_updating_user_window(window, user, patient, images, current_index, appointment, previous_location, origin):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous
     global password_entry, name_entry, password_variable
     current_user = user
@@ -73,25 +74,34 @@ def open_updating_user_window(window, user, patient, images, current_index, appo
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     password_variable = StringVar()
 
-    frame = ttk.Frame(borderwidth=0)
-    ttk.Label(frame, text="Введите новый пароль:", font=("Arial", 10)).pack(expand=True, anchor="center")
-    password_entry = ttk.Entry(frame)
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите новый пароль:").pack(anchor="w", fill=X)
+
+    password_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     password_entry.insert(0, str(current_user[2]))
-    password_entry.pack(expand=True, anchor="center")
-    ttk.Label(frame, textvariable=password_variable, font=("Arial", 10), foreground="#FF0000").pack(expand=True, anchor="center")
-    ttk.Label(frame, text="Введите новое ФИО:", font=("Arial", 10)).pack(expand=True, anchor="center")
-    name_entry = ttk.Entry(frame)
+    password_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", textvariable=password_variable).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите новое ФИО:").pack(anchor="w", fill=X)
+
+    name_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     name_entry.insert(0, str(current_user[3]))
-    name_entry.pack(expand=True, anchor="center")
-    ttk.Button(frame, text="Изменить", command=do_change_user).pack(expand=True, anchor="center")
-    frame.pack(expand=True, anchor="center")
+    name_entry.pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить", command=do_change_user).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(anchor="center", padx=30, pady=20)

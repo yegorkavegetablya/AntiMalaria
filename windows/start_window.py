@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from windows.registration_window import open_registration_window
 from windows.authorization_window import open_authorization_window
+from static.color_themes import configure_color_theme
+from static.extras import CustomButton
 
 
 current_window = None
@@ -23,12 +25,14 @@ def exit_application():
 
 
 def open_start_window(window=None):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window
 
     if window is None:
         current_window = Tk()
         current_window.geometry("1000x1000")
         current_window.attributes("-fullscreen", True)
+        configure_color_theme(current_window)
     else:
         current_window = window
         for child in current_window.winfo_children():
@@ -36,8 +40,16 @@ def open_start_window(window=None):
 
     current_window.title("ПРИВЕТСТВЕННАЯ СТРАНИЦА")
 
-    ttk.Button(current_window, text="Зарегистрироваться", command=registration_button_click).pack(expand=True, anchor="s", padx=20, pady=20)
-    ttk.Button(text="Авторизоваться", command=authorization_button_click).pack(expand=True, anchor="center", padx=20, pady=20)
-    ttk.Button(text="Выйти", command=exit_application).pack(expand=True, anchor="n", padx=20, pady=20)
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Зарегистрироваться", command=registration_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Авторизоваться", command=authorization_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Выйти", command=exit_application).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(anchor="s", padx=30, pady=20)
 
     current_window.mainloop()

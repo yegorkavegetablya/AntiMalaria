@@ -1,3 +1,4 @@
+import datetime
 from tkinter import *
 from tkinter import ttk
 
@@ -51,5 +52,56 @@ def show_photo():
     root.mainloop()
 
 
+def time_experiments():
+    current_time = datetime.datetime.now()
+    print(current_time)
+    print(current_time.year)
+    print(current_time.month)
+    print(current_time.day)
+    print(current_time.hour)
+    print(current_time.minute)
+
+    new_time = current_time - datetime.timedelta(days=10)
+    print(current_time.weekday())
+
+
+def generate_calendar_dates(current_datetime):
+    previous_datetime = current_datetime - datetime.timedelta(days=1)
+    next_datetime = current_datetime + datetime.timedelta(days=1)
+
+    previous_dates = []
+    next_dates = []
+
+    while previous_datetime.month == current_datetime.month:
+        previous_dates.append((previous_datetime.day, True))
+        previous_datetime = previous_datetime - datetime.timedelta(days=1)
+    if previous_datetime.weekday() != 6:
+        for i in range(previous_datetime.weekday() + 1):
+            previous_dates.append((previous_datetime.day, False))
+            previous_datetime = previous_datetime - datetime.timedelta(days=1)
+    while next_datetime.month == current_datetime.month:
+        next_dates.append((next_datetime.day, True))
+        next_datetime = next_datetime + datetime.timedelta(days=1)
+    if next_datetime.weekday() != 0:
+        for i in range(7 - next_datetime.weekday()):
+            next_dates.append((next_datetime.day, False))
+            next_datetime = next_datetime + datetime.timedelta(days=1)
+
+    previous_dates.reverse()
+    return previous_dates + [(current_datetime.day, True)] + next_dates
+
+
+def display_dates():
+    result = generate_calendar_dates(datetime.datetime.now())
+    i = 0
+    for el in result:
+        print("\t" + str(el), end="\t")
+        if i == 6:
+            print()
+        i = (i + 1) % 7
+
+
 if __name__ == '__main__':
-    show_photo()
+    # show_photo()
+    time_experiments()
+    # display_dates()

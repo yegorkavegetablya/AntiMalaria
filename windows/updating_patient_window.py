@@ -125,6 +125,7 @@ def go_settings():
 
 
 def open_updating_patient_window(window, user, patient):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user, current_patient, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
     current_user = user
     current_patient = patient
@@ -133,37 +134,55 @@ def open_updating_patient_window(window, user, patient):
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
-    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
-    ttk.Label(text="Введите ФИО пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_name_entry = ttk.Entry()
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите ФИО пациента:").pack(anchor="w", fill=X)
+
+    patient_name_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_name_entry.insert(0, str(patient[1]))
-    patient_name_entry.pack(anchor="s")
-    ttk.Label(text="Введите возраст пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_age_entry = ttk.Entry()
+    patient_name_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите возраст пациента:").pack(anchor="w", fill=X)
+
+    patient_age_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_age_entry.insert(0, str(patient[2]))
-    patient_age_entry.pack(anchor="s")
-    ttk.Label(text="Введите пол пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_sex_entry = ttk.Entry()
+    patient_age_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите пол пациента:").pack(anchor="w", fill=X)
+
+    patient_sex_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_sex_entry.insert(0, str(patient[3]))
-    patient_sex_entry.pack(anchor="s")
-    ttk.Label(text="Введите e-mail пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_email_entry = ttk.Entry()
+    patient_sex_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите e-mail пациента:").pack(anchor="w", fill=X)
+
+    patient_email_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_email_entry.insert(0, str(patient[4]))
-    patient_email_entry.pack(anchor="s")
-    ttk.Label(text="Введите телефон пациента:", font=("Arial", 10)).pack(anchor="s")
-    patient_phone_entry = ttk.Entry()
+    patient_email_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите телефон пациента:").pack(anchor="w", fill=X)
+
+    patient_phone_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_phone_entry.insert(0, str(patient[5]))
-    patient_phone_entry.pack(anchor="s")
-    ttk.Label(text="Введите дополнительную информацию о пациенте:", font=("Arial", 10)).pack(anchor="s")
-    patient_info_entry = Text()
+    patient_phone_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(text="Введите дополнительную информацию о пациенте:").pack(anchor="w", fill=X)
+
+    patient_info_entry = Text(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_info_entry.insert("1.0", str(patient[6]))
-    patient_info_entry.pack(anchor="s")
-    ttk.Button(text="Принять", command=do_update_patient).pack(anchor="s")
+    patient_info_entry.pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Принять", command=do_update_patient).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

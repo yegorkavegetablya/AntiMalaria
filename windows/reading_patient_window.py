@@ -54,6 +54,7 @@ def go_settings():
 
 
 def open_reading_patient_window(window, user, patient, from_where="patients_list", appointment=None):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user, origin, current_patient, current_appointment
     current_user = user
     origin = from_where
@@ -64,27 +65,47 @@ def open_reading_patient_window(window, user, patient, from_where="patients_list
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
-    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
-    ttk.Label(text="ФИО пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[1]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Label(text="Возраст пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[2]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Label(text="Пол пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[3]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Label(text="E-mail пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[4]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Label(text="Телефон пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[5]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Label(text="Дополнительная информация о пациенте:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
-    ttk.Label(text=str(patient[6]), font=("Arial", 10)).pack(anchor="s")
-    ttk.Button(text="Изменить", command=update_patient_button_click).pack(anchor="s")
-    ttk.Button(text="Загрузить изображения", command=load_images_button_click).pack(anchor="s")
-    ttk.Button(text="Проанализировать изображения изображения", command=analyse_images_button_click).pack(anchor="s")
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="ФИО пациента:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[1])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Возраст пациента:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[2])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Пол пациента:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[3])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="E-mail пациента:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[4])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Телефон пациента:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[5])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Дополнительная информация о пациенте:").pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[6])).pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить", command=update_patient_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Загрузить изображения", command=load_images_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Проанализировать изображения изображения", command=analyse_images_button_click).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

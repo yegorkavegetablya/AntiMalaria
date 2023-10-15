@@ -27,6 +27,7 @@ def go_settings():
 
 
 def open_main_window(window, user):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user
     current_user = user
 
@@ -34,17 +35,19 @@ def open_main_window(window, user):
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
-    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
-    main_frame = ttk.Frame(borderwidth=0)
-    patients_list_button = ttk.Button(main_frame, text="Просмотреть список пациентов", command=patients_list_button_click)
-    appointments_list_button = ttk.Button(main_frame, text="Просмотреть список приёмов", command=appointments_list_button_click)
-    patients_list_button.pack(expand=True, anchor="s", padx=20, pady=20)
-    appointments_list_button.pack(expand=True, anchor="n", padx=20, pady=20)
-    main_frame.pack(expand=True, anchor="center")
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Просмотреть список пациентов", command=patients_list_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Просмотреть список приёмов", command=appointments_list_button_click).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

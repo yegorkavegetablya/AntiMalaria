@@ -59,6 +59,7 @@ def go_back():
 
 
 def open_settings_window(window, user, patient, images, current_index, appointment, previous_location, origin):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous
     current_user = user
     from_where = origin
@@ -72,18 +73,26 @@ def open_settings_window(window, user, patient, images, current_index, appointme
     for child in current_window.winfo_children():
         child.destroy()
 
-    header_frame = ttk.Frame(borderwidth=1, height=50)
+    header_frame = ttk.Frame(style="Frame1.TFrame", borderwidth=3, relief=SOLID, height=100)
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
-    main_frame = ttk.Frame(borderwidth=0)
-    ttk.Label(main_frame, text="Логин: " + str(user[1]), font=("Arial", 10)).pack(anchor="center")
-    ttk.Label(main_frame, text="Пароль: " + str(user[2]), font=("Arial", 10)).pack(anchor="center")
-    ttk.Label(main_frame, text="ФИО: " + str(user[3]), font=("Arial", 10)).pack(anchor="center")
-    ttk.Button(main_frame, text="Изменить данные пользователя", command=update_user_button_click).pack(anchor="center")
-    ttk.Button(main_frame, text="Выйти из аккаунта", command=exit_account_button_click).pack(anchor="center")
-    main_frame.pack(expand=True, anchor="center")
+
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Логин: " + str(user[1])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Пароль: " + str(user[2])).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="ФИО: " + str(user[3])).pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить данные пользователя", command=update_user_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Выйти из аккаунта", command=exit_account_button_click).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(anchor="center", padx=30, pady=20)

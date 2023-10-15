@@ -82,27 +82,38 @@ def go_back():
 
 
 def open_registration_window(window):
+    from static.color_themes import themes, current_color_theme, current_font_size
     global login_entry, password_entry, name_entry, current_window, password_variable
 
     current_window = window
     for child in current_window.winfo_children():
         child.destroy()
 
-    frame = ttk.Frame(borderwidth=0)
-
     password_variable = StringVar()
 
-    ttk.Label(frame, text="Введите ваш логин:", font=("Arial", 10)).pack(expand=True, anchor="center")
-    login_entry = ttk.Entry(frame)
-    login_entry.pack(expand=True, anchor="center")
-    ttk.Label(frame, text="Введите ваш пароль:", font=("Arial", 10)).pack(expand=True, anchor="center")
-    password_entry = ttk.Entry(frame)
-    password_entry.pack(expand=True, anchor="center")
-    ttk.Label(frame, textvariable=password_variable, font=("Arial", 10), foreground="#FF0000").pack(expand=True, anchor="center")
-    ttk.Label(frame, text="Введите ваше ФИО:", font=("Arial", 10)).pack(expand=True, anchor="center")
-    name_entry = ttk.Entry(frame)
-    name_entry.pack(expand=True, anchor="center")
-    ttk.Button(frame, text="Зарегистрироваться", command=do_registration).pack(expand=True, anchor="center")
-    ttk.Button(frame, text="Назад", command=go_back).pack(expand=True, anchor="center")
 
-    frame.pack(expand=True, anchor="center")
+    main_frame = ttk.Frame(style="Frame2.TFrame")
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите ваш логин:").pack(anchor="w", fill=X)
+
+    login_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
+    login_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите ваш пароль:").pack(anchor="w", fill=X)
+
+    password_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
+    password_entry.pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", textvariable=password_variable).pack(anchor="w", fill=X)
+
+    ttk.Label(main_frame, style="Labels.TLabel", text="Введите ваше ФИО:").pack(anchor="w", fill=X)
+
+    name_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
+    name_entry.pack(anchor="w", fill=X)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Зарегистрироваться", command=do_registration).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).pack(anchor="w", fill=X, pady=10)
+
+
+    main_frame.pack(anchor="center", padx=30, pady=20)
