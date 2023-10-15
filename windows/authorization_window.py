@@ -58,16 +58,22 @@ def do_authorization():
                 break
 
         if is_user_found:
-            current_window.destroy()
-            open_main_window(user)
+            open_main_window(current_window, user)
 
 
-def open_authorization_window():
+def go_back():
+    global current_window
+
+    from windows.start_window import open_start_window
+    open_start_window(current_window)
+
+
+def open_authorization_window(window):
     global login_entry, password_entry, current_window, login_and_password_variable
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА АВТОРИЗАЦИИ")
-    current_window.geometry("300x500")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     frame = ttk.Frame(borderwidth=0)
 
@@ -81,7 +87,6 @@ def open_authorization_window():
     password_entry.pack(expand=True, anchor="center")
     ttk.Label(frame, textvariable=login_and_password_variable, font=("Arial", 10), foreground="#FF0000").pack(expand=True, anchor="center")
     ttk.Button(frame, text="Войти", command=do_authorization).pack(expand=True, anchor="center")
+    ttk.Button(frame, text="Назад", command=go_back).pack(expand=True, anchor="center")
 
     frame.pack(expand=True, anchor="center")
-
-    current_window.mainloop()

@@ -1,25 +1,23 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
-from windows.updating_patient_window import open_updating_patient_window
 
 
 current_window, current_user, origin, current_patient, current_appointment = None, None, None, None, None
 
 
 def update_patient_button_click():
+    from windows.updating_patient_window import open_updating_patient_window
     global current_window, current_user, current_patient
 
-    current_window.destroy()
-    open_updating_patient_window(current_user, current_patient)
+    open_updating_patient_window(current_window, current_user, current_patient)
 
 
 def load_images_button_click():
     global current_window, current_user, current_patient
     from windows.images_loading_window import open_images_loading_window
 
-    current_window.destroy()
-    open_images_loading_window(current_user, current_patient)
+    open_images_loading_window(current_window, current_user, current_patient)
 
 
 def analyse_images_button_click():
@@ -34,8 +32,7 @@ def analyse_images_button_click():
     connection.commit()
     connection.close()
 
-    current_window.destroy()
-    open_images_analysis_window(current_user, current_patient, all_images)
+    open_images_analysis_window(current_window, current_user, current_patient, all_images)
 
 
 def go_back():
@@ -44,28 +41,36 @@ def go_back():
     global current_window, current_user, origin, current_appointment
 
     if origin == "patients_list":
-        current_window.destroy()
-        open_patients_list_window(current_user)
+        open_patients_list_window(current_window, current_user)
     else:
-        print("!")
-        current_window.destroy()
-        open_reading_appointment_window(current_user, current_appointment)
+        open_reading_appointment_window(current_window, current_user, current_appointment)
 
 
-def open_reading_patient_window(user, patient, from_where="patients_list", appointment=None):
+def go_settings():
+    global current_window, current_user, current_patient, origin
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, current_patient, None, None, None, origin, 'reading_patient')
+
+
+def open_reading_patient_window(window, user, patient, from_where="patients_list", appointment=None):
     global current_window, current_user, origin, current_patient, current_appointment
     current_user = user
     origin = from_where
     current_patient = patient
     current_appointment = appointment
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ПРОСМОТРА КАРТОЧКИ ПАЦИЕНТА")
-    current_window.geometry("1000x1000")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     ttk.Label(text="ФИО пациента:", font=("Arial", 10)).pack(anchor="s", pady=[10, 0])
@@ -83,5 +88,3 @@ def open_reading_patient_window(user, patient, from_where="patients_list", appoi
     ttk.Button(text="Изменить", command=update_patient_button_click).pack(anchor="s")
     ttk.Button(text="Загрузить изображения", command=load_images_button_click).pack(anchor="s")
     ttk.Button(text="Проанализировать изображения изображения", command=analyse_images_button_click).pack(anchor="s")
-
-    current_window.mainloop()

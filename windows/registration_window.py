@@ -71,16 +71,22 @@ def do_registration():
         connection.close()
 
         from windows.start_window import open_start_window
-        current_window.destroy()
-        open_start_window()
+        open_start_window(current_window)
 
 
-def open_registration_window():
+def go_back():
+    global current_window, curr
+
+    from windows.start_window import open_start_window
+    open_start_window(current_window)
+
+
+def open_registration_window(window):
     global login_entry, password_entry, name_entry, current_window, password_variable
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА РЕГИСТРАЦИИ")
-    current_window.geometry("300x500")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     frame = ttk.Frame(borderwidth=0)
 
@@ -97,7 +103,6 @@ def open_registration_window():
     name_entry = ttk.Entry(frame)
     name_entry.pack(expand=True, anchor="center")
     ttk.Button(frame, text="Зарегистрироваться", command=do_registration).pack(expand=True, anchor="center")
+    ttk.Button(frame, text="Назад", command=go_back).pack(expand=True, anchor="center")
 
     frame.pack(expand=True, anchor="center")
-
-    current_window.mainloop()

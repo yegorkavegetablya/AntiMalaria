@@ -3,8 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import sqlite3
 import re
-from tkinter.messagebox import showerror, showwarning, showinfo
-
+from tkinter.messagebox import showerror
 
 current_window, current_user, appointment_date_entry, appointment_time_entry, patient_id_entry, appointment_datetime_variable = None, None, None, None, None, None
 
@@ -52,8 +51,7 @@ def go_back():
     from windows.appointments_list_window import open_appointments_list_window
     global current_window, current_user
 
-    current_window.destroy()
-    open_appointments_list_window(current_user)
+    open_appointments_list_window(current_window, current_user)
 
 
 def do_create_appointment():
@@ -77,21 +75,31 @@ def do_create_appointment():
         connection.commit()
         connection.close()
 
-        current_window.destroy()
-        open_appointments_list_window(current_user)
+        open_appointments_list_window(current_window, current_user)
 
 
-def open_creating_appointment_window(user):
+def go_settings():
+    global current_window, current_user
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, None, None, None, None, None, 'creating_appointment')
+
+
+def open_creating_appointment_window(window, user):
     global current_window, current_user, appointment_date_entry, appointment_time_entry, patient_id_entry, appointment_datetime_variable
     current_user = user
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ДОБАВЛЕНИЯ ПРИЁМА")
-    current_window.geometry("1000x1000")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -120,5 +128,3 @@ def open_creating_appointment_window(user):
     patient_id_entry.pack(anchor="s")
 
     ttk.Button(text="Добавить", command=do_create_appointment).pack(anchor="s")
-
-    current_window.mainloop()

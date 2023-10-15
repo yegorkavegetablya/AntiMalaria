@@ -3,7 +3,7 @@ from tkinter import ttk
 import sqlite3
 import datetime
 import re
-from tkinter.messagebox import showerror, showwarning, showinfo
+from tkinter.messagebox import showerror
 
 
 current_window, current_user, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry = None, None, None, None, None, None, None, None
@@ -52,8 +52,7 @@ def go_back():
     from windows.reading_appointment_window import open_reading_appointment_window
     global current_window, current_user, current_appointment
 
-    current_window.destroy()
-    open_reading_appointment_window(current_user, current_appointment)
+    open_reading_appointment_window(current_window, current_user, current_appointment)
 
 
 def do_update_appointment():
@@ -76,22 +75,32 @@ def do_update_appointment():
 
         connection.close()
 
-        current_window.destroy()
-        open_appointments_list_window(current_user)
+        open_appointments_list_window(current_window, current_user)
 
 
-def open_updating_appointment_window(user, appointment):
+def go_settings():
+    global current_window, current_user, current_appointment
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, None, None, None, current_appointment, None, 'updating_appointment')
+
+
+def open_updating_appointment_window(window, user, appointment):
     global current_window, current_user, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry
     current_user = user
     current_appointment = appointment
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ИЗМЕНЕНИЯ ПРИЁМА")
-    current_window.geometry("1000x1000")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -128,5 +137,3 @@ def open_updating_appointment_window(user, appointment):
     patient_id_entry.insert(0, current_patient)
     patient_id_entry.pack(anchor="s")
     ttk.Button(text="Принять", command=do_update_appointment).pack(anchor="s")
-
-    current_window.mainloop()

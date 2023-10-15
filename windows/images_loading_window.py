@@ -3,7 +3,7 @@ from tkinter import ttk
 import sqlite3
 from tkinter import filedialog
 import shutil
-from tkinter.messagebox import showerror, showwarning, showinfo
+from tkinter.messagebox import showerror
 
 current_window, current_user, current_patient, images_paths, paths = None, None, None, None, None
 
@@ -21,8 +21,7 @@ def go_back():
     from windows.reading_patient_window import open_reading_patient_window
     global current_window, current_user, current_patient
 
-    current_window.destroy()
-    open_reading_patient_window(current_user, current_patient)
+    open_reading_patient_window(current_window, current_user, current_patient)
 
 
 def do_load_images():
@@ -65,22 +64,32 @@ def do_save_images():
 
         connection.close()
 
-        current_window.destroy()
-        open_reading_patient_window(current_user, current_patient)
+        open_reading_patient_window(current_window, current_user, current_patient)
 
 
-def open_images_loading_window(user, patient):
+def go_settings():
+    global current_window, current_user, current_patient
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, current_patient, None, None, None, None, 'images_loading')
+
+
+def open_images_loading_window(window, user, patient):
     global current_window, current_user, current_patient, images_paths
     current_user = user
     current_patient = patient
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ЗАГРУЗКИ ИЗОБРАЖЕНИЙ")
-    current_window.geometry("1000x500")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     images_paths = StringVar()
@@ -89,5 +98,3 @@ def open_images_loading_window(user, patient):
     images_paths_label = ttk.Label(text="", font=("Arial", 10), textvariable=images_paths)
     images_paths_label.pack(anchor="s")
     ttk.Button(text="Добавить", command=do_save_images).pack(anchor="s")
-
-    current_window.mainloop()

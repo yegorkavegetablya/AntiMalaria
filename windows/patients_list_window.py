@@ -1,10 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
-from tkinter.messagebox import showinfo, askyesno
-from windows.creating_patient_window import open_creating_patient_window
-from windows.reading_patient_window import open_reading_patient_window
-
+from tkinter.messagebox import askyesno
 
 current_window, current_user, patients_listbox, patients_info_list = None, None, None, None
 
@@ -13,23 +10,23 @@ def go_back():
     from windows.main_window import open_main_window
     global current_window, current_user
 
-    current_window.destroy()
-    open_main_window(current_user)
+    open_main_window(current_window, current_user)
 
 
 def creating_patient_button_click():
+    from windows.creating_patient_window import open_creating_patient_window
     global current_window, current_user
 
-    current_window.destroy()
-    open_creating_patient_window(current_user)
+    open_creating_patient_window(current_window, current_user)
 
 
 def reading_patient_button_click():
+    from windows.reading_patient_window import open_reading_patient_window
     global current_window, current_user, patients_listbox, patients_info_list
 
-    current_patients_info_list = patients_info_list[patients_listbox.curselection()[0]]
-    current_window.destroy()
-    open_reading_patient_window(current_user, current_patients_info_list)
+    if patients_listbox.curselection():
+        current_patients_info_list = patients_info_list[patients_listbox.curselection()[0]]
+        open_reading_patient_window(current_window, current_user, current_patients_info_list)
 
 
 def deleting_patient_button_click():
@@ -45,21 +42,31 @@ def deleting_patient_button_click():
         connection.commit()
         connection.close()
 
-        current_window.destroy()
-        open_patients_list_window(current_user)
+        open_patients_list_window(current_window, current_user)
 
 
-def open_patients_list_window(user):
+def go_settings():
+    global current_window, current_user
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, None, None, None, None, None, 'patients_list')
+
+
+def open_patients_list_window(window, user):
     global current_window, current_user, is_origin_main, patients_listbox, patients_info_list
     current_user = user
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ПРОСМОТРА СПИСКА ПАЦИЕНТОВ")
-    current_window.geometry("1000x500")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -82,5 +89,3 @@ def open_patients_list_window(user):
     patients_list_listbox = Listbox(listvariable=patients_list_variable)
     patients_list_listbox.pack(anchor="s", fill=Y, padx=5, pady=5)
     patients_listbox = patients_list_listbox
-
-    current_window.mainloop()

@@ -1,24 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
-from tkinter.messagebox import showinfo, askyesno
-from tkinter import filedialog
-import shutil
+from tkinter.messagebox import askyesno
 
-current_window, current_user, current_patient, all_images, image_index, is_infected_variable = None, None, None, None, None, None
-
-
-def resizeImage(img, newWidth, newHeight):
-    oldWidth = img.width()
-    oldHeight = img.height()
-    newPhotoImage = PhotoImage(width=newWidth, height=newHeight)
-    for x in range(newWidth):
-        for y in range(newHeight):
-            xOld = int(x*oldWidth/newWidth)
-            yOld = int(y*oldHeight/newHeight)
-            rgb = '#%02x%02x%02x' % img.get(xOld, yOld)
-            newPhotoImage.put(rgb, (x, y))
-    return newPhotoImage
+current_window, current_user, current_patient, all_images, image_index, is_infected_variable, current_image = None, None, None, None, None, None, None
 
 
 def go_back():
@@ -26,7 +11,7 @@ def go_back():
     global current_window, current_user, current_patient
 
     current_window.destroy()
-    open_reading_patient_window(current_user, current_patient)
+    open_reading_patient_window(current_window, current_user, current_patient)
 
 
 def do_analyse():
@@ -38,11 +23,11 @@ def do_analyse():
     connection = sqlite3.connect('anti_malaria_db.db')
     cursor = connection.cursor()
     update_image_infected_status = 'UPDATE images SET is_infected=' + str(analysis_result) + ' WHERE image_id=' + str(all_images[image_index][0]) + ';'
-    print(update_image_infected_status)
     cursor.execute(update_image_infected_status)
     connection.commit()
 
     is_infected_variable.set("Не заражена" if analysis_result == 1 else "Заражена")
+    all_images[image_index] = (all_images[image_index][0], all_images[image_index][1], analysis_result, all_images[image_index][3])
 
 
 def do_delete():
@@ -72,35 +57,42 @@ def do_delete():
 def do_open_previous():
     global current_window, current_user, current_patient, all_images, image_index
 
-    current_window.destroy()
     images_amount = len(all_images)
-    open_images_analysis_window(current_user, current_patient, all_images, (image_index + images_amount - 1) % images_amount)
+    open_images_analysis_window(current_window, current_user, current_patient, all_images, (image_index + images_amount - 1) % images_amount)
 
 
 def do_open_next():
     global current_window, current_user, current_patient, all_images, image_index
 
-    current_window.destroy()
     images_amount = len(all_images)
-    open_images_analysis_window(current_user, current_patient, all_images, (image_index + images_amount + 1) % images_amount)
+    open_images_analysis_window(current_window, current_user, current_patient, all_images, (image_index + images_amount + 1) % images_amount)
 
 
-def open_images_analysis_window(user, patient, images, current_index=0):
-    global current_window, current_user, current_patient, all_images, image_index, is_infected_variable
+def go_settings():
+    global current_window, current_user, current_patient, all_images, image_index
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, current_patient, all_images, image_index, None, None, 'analyse_image')
+
+
+def open_images_analysis_window(window, user, patient, images, current_index=0):
+    global current_window, current_user, current_patient, all_images, image_index, is_infected_variable, current_image
     current_user = user
     current_patient = patient
     all_images = images
     image_index = current_index
 
-    print(images)
-
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ПРОСМОТРА ИЗОБРАЖЕНИЯ")
-    current_window.geometry("1000x500")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     is_infected_variable = StringVar()
@@ -112,12 +104,10 @@ def open_images_analysis_window(user, patient, images, current_index=0):
         is_infected_variable.set("Заражена")
 
     ttk.Label(text=str(current_index + 1) + " из " + str(len(images)), font=("Arial", 10)).pack(anchor="s")
-    image = resizeImage(PhotoImage(file=all_images[image_index][1]), 150, 150)
-    ttk.Label(image=image).pack(anchor="s")
+    current_image = PhotoImage(file=all_images[image_index][1])
+    ttk.Label(image=current_image).pack(anchor="s")
     ttk.Label(font=("Arial", 10), textvariable=is_infected_variable).pack(anchor="s")
     ttk.Button(text="Проанализировать", command=do_analyse).pack(anchor="s")
     ttk.Button(text="Удалить", command=do_delete).pack(anchor="s")
     ttk.Button(text="Предыдущая", command=do_open_previous).pack(anchor="s")
     ttk.Button(text="Следующая", command=do_open_next).pack(anchor="s")
-
-    current_window.mainloop()

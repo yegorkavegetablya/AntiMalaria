@@ -2,8 +2,7 @@ from tkinter import *
 from tkinter import ttk
 import sqlite3
 import re
-from tkinter.messagebox import showerror, showwarning, showinfo
-
+from tkinter.messagebox import showerror
 
 current_window, current_user, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry, patient_age_variable, patient_email_variable, patient_phone_variable = None, None, None, None, None, None, None, None, None, None, None
 
@@ -82,8 +81,7 @@ def go_back():
     from windows.patients_list_window import open_patients_list_window
     global current_window, current_user
 
-    current_window.destroy()
-    open_patients_list_window(current_user)
+    open_patients_list_window(current_window, current_user)
 
 
 def do_create_patient():
@@ -110,21 +108,31 @@ def do_create_patient():
         connection.commit()
         connection.close()
 
-        current_window.destroy()
-        open_patients_list_window(current_user)
+        open_patients_list_window(current_window, current_user)
 
 
-def open_creating_patient_window(user):
+def go_settings():
+    global current_window, current_user
+    from windows.settings_window import open_settings_window
+
+    open_settings_window(current_window, current_user, None, None, None, None, None, 'creating_patient')
+
+
+def open_creating_patient_window(window, user):
     global current_window, current_user, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry, patient_age_variable, patient_email_variable, patient_phone_variable
     current_user = user
 
-    current_window = Tk()
-    current_window.title("СТРАНИЦА ДОБАВЛЕНИЯ ПАЦИЕНТА")
-    current_window.geometry("1000x1000")
+    current_window = window
+    for child in current_window.winfo_children():
+        child.destroy()
 
     header_frame = ttk.Frame(borderwidth=1, height=50)
-    ttk.Button(header_frame, text="Назад", command=go_back).place(relx=0.01, rely=0.01)
-    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).place(relx=0.5, rely=0.01)
+    header_frame.columnconfigure(index=0, weight=1)
+    header_frame.columnconfigure(index=1, weight=5)
+    header_frame.columnconfigure(index=2, weight=1)
+    ttk.Button(header_frame, text="Назад", command=go_back).grid(row=0, column=0, sticky="w")
+    ttk.Label(header_frame, text=current_user[3], font=("Arial", 10)).grid(row=0, column=1)
+    ttk.Button(header_frame, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e")
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     patient_age_variable = StringVar()
@@ -153,5 +161,3 @@ def open_creating_patient_window(user):
     patient_info_entry = Text()
     patient_info_entry.pack(anchor="s")
     ttk.Button(text="Добавить", command=do_create_patient).pack(anchor="s")
-
-    current_window.mainloop()
