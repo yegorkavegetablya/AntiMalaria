@@ -90,6 +90,7 @@ def resizeImage(img, newWidth, newHeight):
 
 def open_images_analysis_window(window, user, patient, images, current_index=0):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, current_patient, all_images, image_index, is_infected_variable, current_image
     current_user = user
     current_patient = patient
@@ -104,36 +105,36 @@ def open_images_analysis_window(window, user, patient, images, current_index=0):
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['settings'], command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     is_infected_variable = StringVar()
     if all_images[image_index][2] == 0:
-        is_infected_variable.set("Не проанализирована")
+        is_infected_variable.set(languages[current_language]['not_analysed'])
     elif all_images[image_index][2] == 1:
-        is_infected_variable.set("Не заражена")
+        is_infected_variable.set(languages[current_language]['infected'])
     else:
-        is_infected_variable.set("Заражена")
+        is_infected_variable.set(languages[current_language]['not_infected'])
 
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    ttk.Label(main_frame, style="Labels.TLabel", text=str(current_index + 1) + " из " + str(len(images))).pack(anchor="n")
+    ttk.Label(main_frame, style="Labels.TLabel", text=str(current_index + 1) + languages[current_language]['from'] + str(len(images))).pack(anchor="n")
 
     current_image = resizeImage(PhotoImage(file=all_images[image_index][1]), 300, 300)
     ttk.Label(main_frame, image=current_image).pack(anchor="n")
 
     ttk.Label(main_frame, style="Labels.TLabel", textvariable=is_infected_variable).pack(anchor="n")
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Проанализировать", command=do_analyse).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['analyse'], command=do_analyse).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Удалить", command=do_delete).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['delete'], command=do_delete).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Предыдущая", command=do_open_previous).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['previous'], command=do_open_previous).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Следующая", command=do_open_next).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['next'], command=do_open_next).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

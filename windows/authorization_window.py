@@ -9,6 +9,7 @@ login_entry, password_entry, current_window, login_and_password_variable = None,
 
 
 def validate_login_and_password():
+    from static.languages import languages, current_language
     global password_entry, login_entry, login_and_password_variable
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -24,18 +25,19 @@ def validate_login_and_password():
             login_and_password_variable.set("")
             return True
 
-    login_and_password_variable.set("Неправильно введён логин или пароль")
+    login_and_password_variable.set(languages[current_language]['incorrect_login_or_password'])
     return False
 
 
 def check_if_no_empty():
+    from static.languages import languages, current_language
     global login_entry, password_entry
 
     if login_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (логин, пароль)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_user'])
         return False
     if password_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (логин, пароль)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_user'])
         return False
     return True
 
@@ -43,7 +45,7 @@ def check_if_no_empty():
 def do_authorization():
     global login_entry, password_entry, current_window
 
-    if validate_login_and_password():
+    if check_if_no_empty() and validate_login_and_password():
         connection = sqlite3.connect('anti_malaria_db.db')
         cursor = connection.cursor()
         insert_new_user = 'SELECT * FROM users'
@@ -70,6 +72,7 @@ def go_back():
 
 def open_authorization_window(window):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global login_entry, password_entry, current_window, login_and_password_variable
 
     current_window = window
@@ -81,21 +84,21 @@ def open_authorization_window(window):
 
     login_and_password_variable = StringVar()
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите логин:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_login']).pack(anchor="w", fill=X)
 
     login_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     login_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите пароль:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_password']).pack(anchor="w", fill=X)
 
     password_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     password_entry.pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", textvariable=login_and_password_variable).pack(anchor="w", fill=X)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Войти", command=do_authorization).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['log_in'], command=do_authorization).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(anchor="center", padx=30, pady=20)

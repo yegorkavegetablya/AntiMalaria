@@ -31,9 +31,10 @@ def reading_appointment_button_click():
 
 
 def deleting_patient_button_click():
+    from static.languages import languages, current_language
     global current_window, current_user, appointments_listbox, appointments_info_list
 
-    if askyesno("Подтверждение удаления", "Вы точно хотите безвозвратно удалить данный приём?"):
+    if askyesno(languages[current_language]['deletion_confirmation'], languages[current_language]['do_you_want_to_delete_appointment']):
         current_appointment_info_list = appointments_info_list[appointments_listbox.curselection()[0]]
 
         connection = sqlite3.connect('anti_malaria_db.db')
@@ -55,6 +56,7 @@ def go_settings():
 
 def open_appointments_list_window(window, user):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, appointments_listbox, appointments_info_list
     current_user = user
 
@@ -66,9 +68,9 @@ def open_appointments_list_window(window, user):
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['settings'], command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -98,11 +100,11 @@ def open_appointments_list_window(window, user):
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Добавить приём", command=creating_appointment_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['add_appointment'], command=creating_appointment_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Просмотреть карточку приёма", command=reading_appointment_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['read_appointment'], command=reading_appointment_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Удалить карточку приёма", command=deleting_patient_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['delete_appointment'], command=deleting_patient_button_click).pack(anchor="w", fill=X, pady=10)
 
     appointments_list_variable = Variable(value=appointments_list)
     appointments_list_listbox = Listbox(main_frame, background=themes[current_color_theme]['listbox_background'], foreground=themes[current_color_theme]['listbox_foreground'], font=("Roboto", current_font_size), listvariable=appointments_list_variable)

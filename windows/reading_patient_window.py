@@ -55,6 +55,7 @@ def go_settings():
 
 def open_reading_patient_window(window, user, patient, from_where="patients_list", appointment=None):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, origin, current_patient, current_appointment
     current_user = user
     origin = from_where
@@ -69,43 +70,43 @@ def open_reading_patient_window(window, user, patient, from_where="patients_list
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['settings'], command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="ФИО пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['patient_name']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[1])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Возраст пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['age']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[2])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Пол пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['sex']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[3])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="E-mail пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['email']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[4])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Телефон пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['phone']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[5])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Дополнительная информация о пациенте:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['info']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[6])).pack(anchor="w", fill=X)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить", command=update_patient_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['change'], command=update_patient_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Загрузить изображения", command=load_images_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['load_images'], command=load_images_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Проанализировать изображения изображения", command=analyse_images_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['analyse_images'], command=analyse_images_button_click).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

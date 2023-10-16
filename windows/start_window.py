@@ -26,6 +26,7 @@ def exit_application():
 
 def open_start_window(window=None):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window
 
     if window is None:
@@ -38,16 +39,14 @@ def open_start_window(window=None):
         for child in current_window.winfo_children():
             child.destroy()
 
-    current_window.title("ПРИВЕТСТВЕННАЯ СТРАНИЦА")
-
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Зарегистрироваться", command=registration_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['registrate'], command=registration_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Авторизоваться", command=authorization_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['authorize'], command=authorization_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Выйти", command=exit_application).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['exit'], command=exit_application).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(anchor="s", padx=30, pady=20)

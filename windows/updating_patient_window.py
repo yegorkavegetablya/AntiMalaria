@@ -9,18 +9,19 @@ current_window, current_user, current_patient, patient_name_entry, patient_age_e
 
 
 def validate_patient_age():
+    from static.languages import languages, current_language
     global patient_age_entry, patient_age_variable
 
     age = 0
     try:
         age = int(patient_age_entry.get())
     except:
-        patient_age_variable.set("Возраст должен быть числом")
+        patient_age_variable.set(languages[current_language]['age_must_be_number'])
         return False
     patient_age_variable.set("")
 
     if age < 0 or age > 150:
-        patient_age_variable.set("Возраст должен быть в пределах от 0 до 150 лет")
+        patient_age_variable.set(languages[current_language]['age_must_be_in_limits'])
         return False
 
     patient_age_variable.set("")
@@ -28,24 +29,26 @@ def validate_patient_age():
 
 
 def validate_patient_email():
+    from static.languages import languages, current_language
     global patient_email_variable, patient_email_entry
 
     if re.match("/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i", patient_email_entry.get()) is not None:
         patient_email_variable.set("")
         return True
 
-    patient_email_variable.set("Некорректный адрес электронной почты")
+    patient_email_variable.set(languages[current_language]['incorrect_email'])
     return False
 
 
 def validate_patient_phone():
+    from static.languages import languages, current_language
     global patient_phone_variable, patient_phone_entry
 
     if re.match("/^\+?(\d{1,3})?[- .]?\(?(?:\d{2,3})\)?[- .]?\d\d\d[- .]?\d\d\d\d$/", patient_phone_entry.get()) is not None:
         patient_phone_variable.set("")
         return True
 
-    patient_phone_variable.set("Некорректный номер телефона")
+    patient_phone_variable.set(languages[current_language]['incorrect_phone'])
     return False
 
 
@@ -58,22 +61,23 @@ def validate_all():
 
 
 def check_if_no_empty():
+    from static.languages import languages, current_language
     global patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry
 
     if patient_name_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (ФИО, возраст, пол, электронная почта, телефон)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_patient'])
         return False
     if patient_age_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (ФИО, возраст, пол, электронная почта, телефон)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_patient'])
         return False
     if patient_sex_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (ФИО, возраст, пол, электронная почта, телефон)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_patient'])
         return False
     if patient_email_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (ФИО, возраст, пол, электронная почта, телефон)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_patient'])
         return False
     if patient_phone_entry.get() == "":
-        showerror("Ошибка!", "Заполните все обязательные поля (ФИО, возраст, пол, электронная почта, телефон)!")
+        showerror(languages[current_language]['error'], languages[current_language]['fill_all_gaps_patient'])
         return False
     return True
 
@@ -126,6 +130,7 @@ def go_settings():
 
 def open_updating_patient_window(window, user, patient):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, current_patient, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
     current_user = user
     current_patient = patient
@@ -138,51 +143,51 @@ def open_updating_patient_window(window, user, patient):
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['settings'], command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите ФИО пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_patient_name']).pack(anchor="w", fill=X)
 
     patient_name_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_name_entry.insert(0, str(patient[1]))
     patient_name_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите возраст пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_age']).pack(anchor="w", fill=X)
 
     patient_age_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_age_entry.insert(0, str(patient[2]))
     patient_age_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите пол пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_sex']).pack(anchor="w", fill=X)
 
-    patient_sex_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
+    patient_sex_entry = ttk.Combobox(main_frame, font=("Roboto", current_font_size), values=languages[current_language]['sex_list'])
     patient_sex_entry.insert(0, str(patient[3]))
     patient_sex_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите e-mail пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_email']).pack(anchor="w", fill=X)
 
     patient_email_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_email_entry.insert(0, str(patient[4]))
     patient_email_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Введите телефон пациента:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_phone']).pack(anchor="w", fill=X)
 
     patient_phone_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_phone_entry.insert(0, str(patient[5]))
     patient_phone_entry.pack(anchor="w", fill=X)
 
-    ttk.Label(text="Введите дополнительную информацию о пациенте:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_info']).pack(anchor="w", fill=X)
 
     patient_info_entry = Text(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     patient_info_entry.insert("1.0", str(patient[6]))
     patient_info_entry.pack(anchor="w", fill=X)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Принять", command=do_update_patient).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['confirm'], command=do_update_patient).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

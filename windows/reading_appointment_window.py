@@ -36,6 +36,7 @@ def go_settings():
 
 def open_reading_appointment_window(window, user, appointment):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, origin, current_appointment, current_patient
     current_user = user
     current_appointment = appointment
@@ -48,9 +49,9 @@ def open_reading_appointment_window(window, user, appointment):
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Настройки", command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['settings'], command=go_settings).grid(row=0, column=2, sticky="e", padx=30, pady=10)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
     connection = sqlite3.connect('anti_malaria_db.db')
@@ -69,21 +70,21 @@ def open_reading_appointment_window(window, user, appointment):
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Дата и время приёма:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['date_and_time']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(appointment[1])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Статус приёма:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['status']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(appointment[2])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Пациент:").pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['patient']).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=str(str(current_patient[0]) + ': ' + current_patient[1] + ', ' + str(current_patient[2]) + ', ' + current_patient[3])).pack(anchor="w", fill=X)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Просмотреть карточку пациента", command=read_patient_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['read_patient'], command=read_patient_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить", command=update_appointment_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['change'], command=update_appointment_button_click).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(expand=True, fill=BOTH, anchor="center", padx=30, pady=20)

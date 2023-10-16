@@ -5,6 +5,13 @@ from tkinter import ttk
 current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous = None, None, None, None, None, None, None, None
 
 
+def change_gui_button_click():
+    from windows.gui_settings_window import open_gui_settings_window
+    global current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous
+
+    open_gui_settings_window(current_window, current_user, current_patient, current_images, index, current_appointment, previous, from_where)
+
+
 def update_user_button_click():
     from windows.updating_user_window import open_updating_user_window
     global current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous
@@ -60,6 +67,7 @@ def go_back():
 
 def open_settings_window(window, user, patient, images, current_index, appointment, previous_location, origin):
     from static.color_themes import themes, current_color_theme, current_font_size
+    from static.languages import languages, current_language
     global current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous
     current_user = user
     from_where = origin
@@ -77,22 +85,24 @@ def open_settings_window(window, user, patient, images, current_index, appointme
     header_frame.columnconfigure(index=0, weight=1)
     header_frame.columnconfigure(index=1, weight=5)
     header_frame.columnconfigure(index=2, weight=1)
-    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Назад", command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
+    Button(header_frame, background=themes[current_color_theme]['button_frame_background'], foreground=themes[current_color_theme]['button_frame_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['back'], command=go_back).grid(row=0, column=0, sticky="w", padx=30, pady=10)
     ttk.Label(header_frame, style="HeaderLabel.TLabel", text=current_user[3]).grid(row=0, column=1)
     header_frame.pack(expand=False, anchor="n", fill=X)
 
 
     main_frame = ttk.Frame(style="Frame2.TFrame")
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Логин: " + str(user[1])).pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_login'] + str(user[1])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="Пароль: " + str(user[2])).pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_password'] + str(user[2])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text="ФИО: " + str(user[3])).pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_name'] + str(user[3])).pack(anchor="w", fill=X)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Изменить данные пользователя", command=update_user_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['change_gui'], command=change_gui_button_click).pack(anchor="w", fill=X, pady=10)
 
-    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text="Выйти из аккаунта", command=exit_account_button_click).pack(anchor="w", fill=X, pady=10)
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['change_user_data'], command=update_user_button_click).pack(anchor="w", fill=X, pady=10)
+
+    Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['log_out'], command=exit_account_button_click).pack(anchor="w", fill=X, pady=10)
 
 
     main_frame.pack(anchor="center", padx=30, pady=20)

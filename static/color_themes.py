@@ -5,6 +5,15 @@ from tkinter import ttk
 current_color_theme = 0
 current_font_size = 16
 
+theme_name_to_number_dict = {
+    "Light": 0,
+    "Dark": 1
+}
+theme_number_to_name_dict = {
+    0: "Light",
+    1: "Dark"
+}
+
 
 themes = [
     {
@@ -26,7 +35,22 @@ themes = [
         "listbox_background": "#FFBBBB"
     },
     {
-
+        "window_background": "#220000",
+        "header_frame_foreground": "#330000",
+        "header_frame_background": "#330000",
+        "button_frame_foreground": "#FFBBBB",
+        "button_frame_background": "#220000",
+        "common_label_foreground": "#FFBBBB",
+        "common_label_background": "#220000",
+        "header_label_foreground": "#FFBBBB",
+        "header_label_background": "#330000",
+        "button_foreground": "#FFBBBB",
+        "button_background": "#330000",
+        "entry_foreground": "#FFBBBB",
+        "entry_background": "#330000",
+        "combobox_background": "#330000",
+        "listbox_foreground": "#FFBBBB",
+        "listbox_background": "#330000"
     }
 ]
 
