@@ -57,6 +57,17 @@ def go_back():
     open_reading_appointment_window(current_window, current_user, current_appointment)
 
 
+def get_default_status(current_status):
+    from static.languages import current_language, languages
+
+    if current_status == languages[current_language]['statuses_list'][0]:
+        return languages[1]['statuses_list'][0]
+    elif current_status == languages[current_language]['statuses_list'][1]:
+        return languages[1]['statuses_list'][1]
+    else:
+        return languages[1]['statuses_list'][2]
+
+
 def do_update_appointment():
     global current_window, current_appointment, current_patient, appointment_date_entry, appointment_time_entry, appointment_status_entry, patient_id_entry
     from windows.appointments_list_window import open_appointments_list_window
@@ -68,7 +79,7 @@ def do_update_appointment():
         update_appointment_date = 'UPDATE appointments SET appointment_date=\"' + appointment_date_entry.get() + ' ' + appointment_time_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
         cursor.execute(update_appointment_date)
         connection.commit()
-        update_status = 'UPDATE appointments SET status=\"' + appointment_status_entry.get() + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
+        update_status = 'UPDATE appointments SET status=\"' + get_default_status(appointment_status_entry.get()) + '\" WHERE appointment_id=' + str(current_appointment[0]) + ';'
         cursor.execute(update_status)
         connection.commit()
         update_assigned_patient_id = 'UPDATE appointments SET assigned_patient_id=' + patient_id_entry.get().split(':')[0] + ' WHERE appointment_id=' + str(current_appointment[0]) + ';'
@@ -85,6 +96,17 @@ def go_settings():
     from windows.settings_window import open_settings_window
 
     open_settings_window(current_window, current_user, None, None, None, current_appointment, None, 'updating_appointment')
+
+
+def get_current_status(default_status):
+    from static.languages import current_language, languages
+
+    if default_status == languages[1]['statuses_list'][0]:
+        return languages[current_language]['statuses_list'][0]
+    elif default_status == languages[1]['statuses_list'][1]:
+        return languages[current_language]['statuses_list'][1]
+    else:
+        return languages[current_language]['statuses_list'][2]
 
 
 def open_updating_appointment_window(window, user, appointment):
@@ -142,7 +164,7 @@ def open_updating_appointment_window(window, user, appointment):
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['choose_status']).pack(anchor="w", fill=X)
 
     appointment_status_entry = ttk.Combobox(main_frame, font=("Roboto", current_font_size), values=languages[current_language]['statuses_list'])
-    appointment_status_entry.insert(0, appointment[2])
+    appointment_status_entry.insert(0, get_current_status(appointment[2]))
     appointment_status_entry.pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['choose_patient']).pack(anchor="w", fill=X)

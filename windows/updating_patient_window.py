@@ -89,6 +89,15 @@ def go_back():
     open_reading_patient_window(current_window, current_user, current_patient)
 
 
+def get_default_sex(current_sex):
+    from static.languages import current_language, languages
+
+    if current_sex == languages[current_language]['sex_list'][0]:
+        return languages[1]['sex_list'][0]
+    else:
+        return languages[1]['sex_list'][1]
+
+
 def do_update_patient():
     global current_window, current_patient, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
     from windows.patients_list_window import open_patients_list_window
@@ -103,7 +112,7 @@ def do_update_patient():
         update_patient_age = 'UPDATE patients SET age=' + patient_age_entry.get() + ' WHERE patient_id=' + str(current_patient[0]) + ';'
         cursor.execute(update_patient_age)
         connection.commit()
-        update_patient_sex = 'UPDATE patients SET sex=\"' + patient_sex_entry.get() + '\" WHERE patient_id=' + str(current_patient[0]) + ';'
+        update_patient_sex = 'UPDATE patients SET sex=\"' + get_default_sex(patient_sex_entry.get()) + '\" WHERE patient_id=' + str(current_patient[0]) + ';'
         cursor.execute(update_patient_sex)
         connection.commit()
         update_patient_email = 'UPDATE patients SET email=\"' + patient_email_entry.get() + '\" WHERE patient_id=' + str(current_patient[0]) + ';'
@@ -126,6 +135,15 @@ def go_settings():
     from windows.settings_window import open_settings_window
 
     open_settings_window(current_window, current_user, current_patient, None, None, None, None, 'updating_patient')
+
+
+def get_current_sex(default_sex):
+    from static.languages import current_language, languages
+
+    if default_sex == languages[1]['sex_list'][0]:
+        return languages[current_language]['sex_list'][0]
+    else:
+        return languages[current_language]['sex_list'][1]
 
 
 def open_updating_patient_window(window, user, patient):
@@ -166,7 +184,7 @@ def open_updating_patient_window(window, user, patient):
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_sex']).pack(anchor="w", fill=X)
 
     patient_sex_entry = ttk.Combobox(main_frame, font=("Roboto", current_font_size), values=languages[current_language]['sex_list'])
-    patient_sex_entry.insert(0, str(patient[3]))
+    patient_sex_entry.insert(0, get_current_sex(str(patient[3])))
     patient_sex_entry.pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_email']).pack(anchor="w", fill=X)

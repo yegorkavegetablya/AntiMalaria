@@ -94,6 +94,15 @@ def go_back():
     open_patients_list_window(current_window, current_user)
 
 
+def get_default_sex(current_sex):
+    from static.languages import current_language, languages
+
+    if current_sex == languages[current_language]['sex_list'][0]:
+        return languages[1]['sex_list'][0]
+    else:
+        return languages[1]['sex_list'][1]
+
+
 def do_create_patient():
     global current_window, is_origin_list, patient_name_entry, patient_age_entry, patient_sex_entry, patient_email_entry, patient_phone_entry, patient_info_entry
     from windows.patients_list_window import open_patients_list_window
@@ -106,7 +115,7 @@ def do_create_patient():
                           '\", \"' \
                           + patient_age_entry.get() + \
                           '\", \"'\
-                          + patient_sex_entry.get() +\
+                          + get_default_sex(patient_sex_entry.get()) +\
                           '\", \"'\
                           + patient_email_entry.get() +\
                           '\", \"'\

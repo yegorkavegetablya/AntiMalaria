@@ -34,6 +34,17 @@ def go_settings():
     open_settings_window(current_window, current_user, None, None, None, current_appointment, None, 'reading_appointment')
 
 
+def get_current_status(default_status):
+    from static.languages import current_language, languages
+
+    if default_status == languages[1]['statuses_list'][0]:
+        return languages[current_language]['statuses_list'][0]
+    elif default_status == languages[1]['statuses_list'][1]:
+        return languages[current_language]['statuses_list'][1]
+    else:
+        return languages[current_language]['statuses_list'][2]
+
+
 def open_reading_appointment_window(window, user, appointment):
     from static.color_themes import themes, current_color_theme, current_font_size
     from static.languages import languages, current_language
@@ -76,7 +87,7 @@ def open_reading_appointment_window(window, user, appointment):
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['status']).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text=str(appointment[2])).pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=get_current_status(str(appointment[2]))).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['patient']).pack(anchor="w", fill=X)
 

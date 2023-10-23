@@ -50,6 +50,9 @@ def do_change_user():
 
         connection.close()
 
+        current_user[2] = password_entry.get()
+        current_user[3] = name_entry.get()
+
         go_back()
 
 

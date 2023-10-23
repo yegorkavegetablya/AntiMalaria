@@ -53,6 +53,15 @@ def go_settings():
     open_settings_window(current_window, current_user, current_patient, None, None, None, origin, 'reading_patient')
 
 
+def get_current_sex(default_sex):
+    from static.languages import current_language, languages
+
+    if default_sex == languages[1]['sex_list'][0]:
+        return languages[current_language]['sex_list'][0]
+    else:
+        return languages[current_language]['sex_list'][1]
+
+
 def open_reading_patient_window(window, user, patient, from_where="patients_list", appointment=None):
     from static.color_themes import themes, current_color_theme, current_font_size
     from static.languages import languages, current_language
@@ -88,7 +97,7 @@ def open_reading_patient_window(window, user, patient, from_where="patients_list
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['sex']).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text=str(patient[3])).pack(anchor="w", fill=X)
+    ttk.Label(main_frame, style="Labels.TLabel", text=get_current_sex(str(patient[3]))).pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['email']).pack(anchor="w", fill=X)
 
