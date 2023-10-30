@@ -1,10 +1,12 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
-from tkinter.messagebox import showerror, showwarning, showinfo
+from tkinter.messagebox import showerror
 from windows.main_window import open_main_window
+import hashlib
 
 
+salt = b'(x\xc1\xfbm\x81\xd5;?1\xf5\x1fN\xff\x1c\x90\xa4q\xe9\xe8\x9akv\x0e%\xee@\x9e\xfd\x1c\x85{'
 login_entry, password_entry, current_window, login_and_password_variable = None, None, None, None
 
 
@@ -21,7 +23,7 @@ def validate_login_and_password():
     connection.close()
 
     for user in all_users:
-        if user[1] == login_entry.get() and user[2] == password_entry.get():
+        if user[1] == login_entry.get() and user[2] == str(hashlib.pbkdf2_hmac('sha256', password_entry.get().encode(), salt, 100000).hex()):
             login_and_password_variable.set("")
             return True
 
@@ -55,7 +57,7 @@ def do_authorization():
 
         is_user_found = False
         for user in all_users:
-            if user[1] == login_entry.get() and user[2] == password_entry.get():
+            if user[1] == login_entry.get() and user[2] == str(hashlib.pbkdf2_hmac('sha256', password_entry.get().encode(), salt, 100000).hex()):
                 is_user_found = True
                 break
 
@@ -91,7 +93,7 @@ def open_authorization_window(window):
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_password']).pack(anchor="w", fill=X)
 
-    password_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
+    password_entry = Entry(main_frame, show="*", bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     password_entry.pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", textvariable=login_and_password_variable).pack(anchor="w", fill=X)

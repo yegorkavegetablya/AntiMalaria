@@ -94,8 +94,6 @@ def open_settings_window(window, user, patient, images, current_index, appointme
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_login'] + str(user[1])).pack(anchor="w", fill=X)
 
-    ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_password'] + str(user[2])).pack(anchor="w", fill=X)
-
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['your_name'] + str(user[3])).pack(anchor="w", fill=X)
 
     Button(main_frame, background=themes[current_color_theme]['button_background'], foreground=themes[current_color_theme]['button_foreground'], font=("Roboto", current_font_size), borderwidth=0, text=languages[current_language]['change_gui'], command=change_gui_button_click).pack(anchor="w", fill=X, pady=10)

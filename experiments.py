@@ -1,6 +1,7 @@
 import datetime
 from tkinter import *
 from tkinter import ttk
+import os
 
 
 def resizeImage(img, newWidth, newHeight):
@@ -101,7 +102,12 @@ def display_dates():
         i = (i + 1) % 7
 
 
+def get_random_salt():
+    print(os.urandom(32))
+
+
 if __name__ == '__main__':
     # show_photo()
-    time_experiments()
+    # time_experiments()
     # display_dates()
+    get_random_salt()

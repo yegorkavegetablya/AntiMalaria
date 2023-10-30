@@ -1,8 +1,11 @@
 from tkinter import *
 from tkinter import ttk
 import sqlite3
-from tkinter.messagebox import showerror, showwarning, showinfo
+from tkinter.messagebox import showerror
+import hashlib
 
+
+salt = b'(x\xc1\xfbm\x81\xd5;?1\xf5\x1fN\xff\x1c\x90\xa4q\xe9\xe8\x9akv\x0e%\xee@\x9e\xfd\x1c\x85{'
 current_window, current_user, from_where, current_patient, current_images, index, current_appointment, previous = None, None, None, None, None, None, None, None
 login_entry, password_entry, name_entry, password_variable = None, None, None, None
 
@@ -41,7 +44,7 @@ def do_change_user():
         connection = sqlite3.connect('anti_malaria_db.db')
         cursor = connection.cursor()
 
-        update_user_password = 'UPDATE users SET password=\"' + password_entry.get() + '\" WHERE user_id=' + str(current_user[0]) + ';'
+        update_user_password = 'UPDATE users SET password=\"' + str(hashlib.pbkdf2_hmac('sha256', password_entry.get().encode(), salt, 100000).hex()) + '\" WHERE user_id=' + str(current_user[0]) + ';'
         cursor.execute(update_user_password)
         connection.commit()
         update_user_name = 'UPDATE users SET user_name=\"' + name_entry.get() + '\" WHERE user_id=' + str(current_user[0]) + ';'
@@ -50,8 +53,7 @@ def do_change_user():
 
         connection.close()
 
-        current_user[2] = password_entry.get()
-        current_user[3] = name_entry.get()
+        current_user = (current_user[0], current_user[1], password_entry.get(), name_entry.get())
 
         go_back()
 
@@ -95,8 +97,7 @@ def open_updating_user_window(window, user, patient, images, current_index, appo
 
     ttk.Label(main_frame, style="Labels.TLabel", text=languages[current_language]['enter_new_password']).pack(anchor="w", fill=X)
 
-    password_entry = Entry(main_frame, bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
-    password_entry.insert(0, str(current_user[2]))
+    password_entry = Entry(main_frame, show="*", bg=themes[current_color_theme]['entry_background'], fg=themes[current_color_theme]['entry_foreground'], font=("Roboto", current_font_size))
     password_entry.pack(anchor="w", fill=X)
 
     ttk.Label(main_frame, style="Labels.TLabel", textvariable=password_variable).pack(anchor="w", fill=X)
