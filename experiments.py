@@ -106,8 +106,18 @@ def get_random_salt():
     print(os.urandom(32))
 
 
+def do_random_function_stuff():
+    def return_special_function(parameter):
+        def special_function():
+            return parameter ** 2
+        return special_function
+
+    print(return_special_function(5)())
+
+
 if __name__ == '__main__':
     # show_photo()
     # time_experiments()
     # display_dates()
-    get_random_salt()
+    # get_random_salt()
+    do_random_function_stuff()

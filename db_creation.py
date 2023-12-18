@@ -1,7 +1,10 @@
 import sqlite3
 
+very_string_password = "Very1Strong2Password3No4One5Will6Break!!!_#"
+
 if __name__ == '__main__':
     connection = sqlite3.connect('anti_malaria_db.db')
+
     cursor = connection.cursor()
 
     cursor.execute('''
