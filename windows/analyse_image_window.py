@@ -26,7 +26,7 @@ def do_analyse():
     cursor.execute(update_image_infected_status)
     connection.commit()
 
-    is_infected_variable.set("Не заражена" if analysis_result == 1 else "Заражена")
+    is_infected_variable.set("Не заражена" if analysis_result == 0 else "Заражена")
     all_images[image_index] = (all_images[image_index][0], all_images[image_index][1], analysis_result, all_images[image_index][3])
 
 
